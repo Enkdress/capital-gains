@@ -9,6 +9,14 @@ type Stock struct {
 	losses           float32
 }
 
+func (s *Stock) CalculateTotalShareAmount(operationQuantity int32) {
+	s.totalQuantity = s.totalQuantity - operationQuantity
+}
+
+func (s *Stock) DeductLoss(operationLoss float32) {
+	s.losses = s.losses + operationLoss
+}
+
 func (s *Stock) AcummulateProfit(grossProfit float32) {
 	s.profit = s.profit + grossProfit
 }
@@ -65,15 +73,4 @@ func NewStock(operations []Operation) Stock {
 	stock.GetTaxes()
 
 	return stock
-}
-
-// For each set of operations create a stock struct
-func InitializeStocks(stockOperations [][]Operation) []Stock {
-	var stocks []Stock
-	for i := 0; i < len(stockOperations); i++ {
-		stock := NewStock(stockOperations[i])
-		stocks = append(stocks, stock)
-	}
-
-	return stocks
 }

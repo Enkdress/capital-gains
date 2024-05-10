@@ -26,18 +26,24 @@ func (o *Operation) CalculateTaxes(stock *Stock, operationIndex int) map[string]
 		return map[string]float32{"tax": 0.00}
 	}
 
-	// This is the amount of shares of the stock
-	stock.totalQuantity = stock.totalQuantity - o.Quantity
+	stock.CalculateTotalShareAmount(o.Quantity)
 	stock.CalculateWeightedAvgPrice(operationIndex)
-
 	grossProfit := o.calculateGrossProfit(stock.weightedAvgPrice)
+
 	isTotalAmountTaxable := o.TotalAmount > MinTaxableAmount
 	hasLosses := stock.losses < 0
 	isDeductable := isTotalAmountTaxable && hasLosses
+	o.GetNetProfit(isDeductable, grossProfit, stock.losses)
+
+	if o.NetProfit < 0 {
+		stock.DeductLoss(grossProfit)
+	}
 
 	if isDeductable {
 		o.NetProfit = netProfitCalculation(grossProfit, stock.losses)
-		stock.losses = stock.losses + grossProfit // Deduct the profit to the losses (like paying my debt)
+		stock.DeductLoss(grossProfit)
+	} else {
+		o.NetProfit = grossProfit
 	}
 
 	isTaxable := isTotalAmountTaxable && o.NetProfit > 0
@@ -63,6 +69,18 @@ func (o *Operation) CalculateTaxes(stock *Stock, operationIndex int) map[string]
 	return map[string]float32{"tax": 0.00}
 }
 
+func (o *Operation) GetNetProfit(isDeductable bool, grossProfit, losses float32) {
+	if isDeductable {
+		o.NetProfit = netProfitCalculation(grossProfit, losses)
+	} else {
+		o.NetProfit = grossProfit
+	}
+}
+
+func (o *Operation) calculateGrossProfit(weightedAvgPrice float32) float32 {
+	return (float32(o.Quantity) * o.UnitCost) - (float32(o.Quantity) * weightedAvgPrice)
+}
+
 func netProfitCalculation(grossProfit, profit float32) float32 {
 	value := grossProfit + profit
 	netProfit := grossProfit
@@ -81,10 +99,6 @@ func taxCalculation(netProfit float32) float32 {
 
 }
 
-func (o *Operation) calculateGrossProfit(weightedAvgPrice float32) float32 {
-	return (float32(o.Quantity) * o.UnitCost) - (float32(o.Quantity) * weightedAvgPrice)
-}
-
 func NewOperation(operationType string, unitCost float32, quantity int32) Operation {
 	operation := Operation{
 		Type:        operationType,
@@ -98,17 +112,26 @@ func NewOperation(operationType string, unitCost float32, quantity int32) Operat
 }
 
 func ParseOperations(data string) [][]Operation {
-	parts := strings.Split(data, "]")
+	stoks := strings.Split(data, "]")
 
 	var items [][]Operation
 
-	for i := 0; i < len(parts)-1; i++ {
-		jsonString := parts[i] + "]"
+	for i := 0; i < len(stoks)-1; i++ {
+		jsonStock := stoks[i] + "]"
+		var partialOperations []Operation
 		var operations []Operation
 
-		if err := json.Unmarshal([]byte(strings.TrimSpace(jsonString)), &operations); err != nil {
+		// Convert the string with the list of operation into a struct
+		if err := json.Unmarshal([]byte(strings.TrimSpace(jsonStock)), &partialOperations); err != nil {
 			log.Fatalf("OPERATION L40: %s", err)
 		}
+
+		// Call the NewOperation method to create the operations for each stock
+		for _, op := range partialOperations {
+			operation := NewOperation(op.Type, op.UnitCost, op.Quantity)
+			operations = append(operations, operation)
+		}
+
 		items = append(items, operations)
 	}
 
