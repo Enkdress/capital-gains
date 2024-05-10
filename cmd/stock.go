@@ -8,7 +8,7 @@ type Stock struct {
 	losses           float32
 }
 
-func (s *Stock) UpdateTotalShareCount(quantity int32, operationType string) {
+func (s *Stock) UpdateTotalAmount(quantity int32, operationType string) {
 	if operationType == BuyOperation {
 		s.totalQuantity = s.totalQuantity + quantity
 	} else {
@@ -30,35 +30,39 @@ func (s *Stock) ResetProfit() {
 	}
 }
 
-func (s *Stock) CalculateWeightedAvgPrice(currentOperation int) {
-	currentQuantity := s.operations[0].Quantity
-	arrInit := 0
+func (s *Stock) CalculateAvgPrice(currentQuantity int32, operationQuantity int32, operationUnitCost float32) float32 {
+	avgPrice := ((float32(currentQuantity) * s.weightedAvgPrice) +
+		(float32(operationQuantity) * operationUnitCost)) /
+		float32(currentQuantity+operationQuantity)
 
-	for i, operation := range s.operations[arrInit:currentOperation] {
-		if i == 0 {
-			s.weightedAvgPrice = operation.UnitCost
-			continue
-		}
-
-		if operation.Type == SellOperation {
-			currentQuantity = currentQuantity - operation.Quantity
-			continue
-		}
-
-		currentWeightedAvgPrice := ((float32(currentQuantity) * s.weightedAvgPrice) +
-			(float32(operation.Quantity) * operation.UnitCost)) /
-			float32(currentQuantity+operation.Quantity)
-
-		s.weightedAvgPrice = currentWeightedAvgPrice
-		currentQuantity = currentQuantity + operation.Quantity
-	}
+	s.weightedAvgPrice = avgPrice
+	return avgPrice
 }
 
 func (s *Stock) GetTaxes() []map[string]float32 {
 	taxes := make([]map[string]float32, 0, 0)
+	var currentQuantity int32 = 0
 	for i, operation := range s.operations {
-		s.UpdateTotalShareCount(operation.Quantity, operation.Type)
-		s.CalculateWeightedAvgPrice(i)
+		isFirstBuy := i == 0
+		isSellOperation := operation.Type == SellOperation
+		isBuyOperation := operation.Type == BuyOperation
+
+		if isFirstBuy {
+			currentQuantity = operation.Quantity
+			s.weightedAvgPrice = operation.UnitCost
+		}
+
+		if isSellOperation {
+			currentQuantity = currentQuantity - operation.Quantity
+		}
+
+		if isBuyOperation && !isFirstBuy {
+			s.CalculateAvgPrice(currentQuantity, operation.Quantity, operation.UnitCost)
+			currentQuantity = currentQuantity + operation.Quantity
+		}
+
+		s.UpdateTotalAmount(operation.Quantity, operation.Type)
+
 		tax := operation.CalculateTaxes(s)
 		taxes = append(taxes, tax)
 	}
