@@ -13,10 +13,6 @@ func (s *Stock) CalculateTotalShareAmount(operationQuantity int32) {
 	s.totalQuantity = s.totalQuantity - operationQuantity
 }
 
-func (s *Stock) DeductLoss(operationLoss float32) {
-	s.losses = s.losses + operationLoss
-}
-
 func (s *Stock) AcummulateProfit(grossProfit float32) {
 	s.profit = s.profit + grossProfit
 }
