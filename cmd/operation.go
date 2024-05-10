@@ -19,15 +19,12 @@ type Operation struct {
 	NetProfit   float32
 }
 
-func (o *Operation) CalculateTaxes(stock *Stock, operationIndex int) map[string]float32 {
+func (o *Operation) CalculateTaxes(stock *Stock) map[string]float32 {
 	// Only sell operations has taxes
 	if o.Type == BuyOperation {
-		stock.totalQuantity = stock.totalQuantity + o.Quantity
 		return map[string]float32{"tax": 0.00}
 	}
 
-	stock.CalculateTotalShareAmount(o.Quantity)
-	stock.CalculateWeightedAvgPrice(operationIndex)
 	grossProfit := o.calculateGrossProfit(stock.weightedAvgPrice)
 
 	isTotalAmountTaxable := o.TotalAmount > MinTaxableAmount
@@ -40,8 +37,6 @@ func (o *Operation) CalculateTaxes(stock *Stock, operationIndex int) map[string]
 	}
 
 	isTaxable := isTotalAmountTaxable && o.NetProfit > 0
-	// fmt.Printf("\nWAP: %v\nTA: %v\nGP: %v\nDE: %v\nLO: %v\nNP: %v\nTXB: %v\n",
-	// 	stock.weightedAvgPrice, o.TotalAmount, grossProfit, isDeductable, stock.losses, o.NetProfit, isTaxable)
 
 	// Losses do not pay taxes
 	if grossProfit < 0 {
@@ -93,7 +88,6 @@ func netProfitCalculation(grossProfit, profit float32) float32 {
 
 func taxCalculation(netProfit float32) float32 {
 	return netProfit * TaxRate
-
 }
 
 func NewOperation(operationType string, unitCost float32, quantity int32) Operation {
@@ -118,9 +112,9 @@ func ParseOperations(data string) [][]Operation {
 		var partialOperations []Operation
 		var operations []Operation
 
-		// Convert the string with the list of operation into a struct
+		// Convert the string with the list of operations into a struct
 		if err := json.Unmarshal([]byte(strings.TrimSpace(jsonStock)), &partialOperations); err != nil {
-			log.Fatalf("OPERATION L40: %s", err)
+			log.Fatalf("Error - Operation: %s", err)
 		}
 
 		// Call the NewOperation method to create the operations for each stock

@@ -12,7 +12,7 @@ func GetStinData() string {
 	text, err := reader.ReadString('\r')
 
 	if err != io.EOF && err != nil {
-		log.Fatalf("UTILS L15: %s", err)
+		log.Fatalf("Error - Utils: %s", err)
 	}
 
 	return text

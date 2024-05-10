@@ -6,65 +6,65 @@ import (
 )
 
 func TestCase1(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case1Input.taxes, Case1Result)
+	isTaxEqual := reflect.DeepEqual(Case1Input.GetTaxes(), Case1Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 1 failed:\nExpected: %v\nRecieved: %v", Case1Result, Case1Input.taxes)
+		t.Errorf("\nCase 1 failed:\nExpected: %v\nRecieved: %v", Case1Result, Case1Input.GetTaxes())
 	}
 }
 
 func TestCase2(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case2Input.taxes, Case2Result)
+	isTaxEqual := reflect.DeepEqual(Case2Input.GetTaxes(), Case2Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 2 failed:\nExpected: %v\nRecieved: %v", Case2Result, Case2Input.taxes)
+		t.Errorf("\nCase 2 failed:\nExpected: %v\nRecieved: %v", Case2Result, Case2Input.GetTaxes())
 	}
 }
 
 func TestCase3(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case3Input.taxes, Case3Result)
+	isTaxEqual := reflect.DeepEqual(Case3Input.GetTaxes(), Case3Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 3 failed:\nExpected: %v\nRecieved: %v", Case3Result, Case3Input.taxes)
+		t.Errorf("\nCase 3 failed:\nExpected: %v\nRecieved: %v", Case3Result, Case3Input.GetTaxes())
 	}
 }
 
 func TestCase4(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case4Input.taxes, Case4Result)
+	isTaxEqual := reflect.DeepEqual(Case4Input.GetTaxes(), Case4Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 4 failed:\nExpected: %v\nRecieved: %v", Case4Result, Case4Input.taxes)
+		t.Errorf("\nCase 4 failed:\nExpected: %v\nRecieved: %v", Case4Result, Case4Input.GetTaxes())
 	}
 }
 
 func TestCase5(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case5Input.taxes, Case5Result)
+	isTaxEqual := reflect.DeepEqual(Case5Input.GetTaxes(), Case5Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 5 failed:\nExpected: %v\nRecieved: %v", Case5Result, Case5Input.taxes)
+		t.Errorf("\nCase 5 failed:\nExpected: %v\nRecieved: %v", Case5Result, Case5Input.GetTaxes())
 	}
 }
 
 func TestCase6(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case6Input.taxes, Case6Result)
+	isTaxEqual := reflect.DeepEqual(Case6Input.GetTaxes(), Case6Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 6 failed:\nExpected: %v\nRecieved: %v", Case6Result, Case6Input.taxes)
+		t.Errorf("\nCase 6 failed:\nExpected: %v\nRecieved: %v", Case6Result, Case6Input.GetTaxes())
 	}
 }
 
 func TestCase7(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case7Input.taxes, Case7Result)
+	isTaxEqual := reflect.DeepEqual(Case7Input.GetTaxes(), Case7Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 7 failed:\nExpected: %v\nRecieved: %v", Case7Result, Case7Input.taxes)
+		t.Errorf("\nCase 7 failed:\nExpected: %v\nRecieved: %v", Case7Result, Case7Input.GetTaxes())
 	}
 }
 
 func TestCase8(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case8Input.taxes, Case8Result)
+	isTaxEqual := reflect.DeepEqual(Case8Input.GetTaxes(), Case8Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 8 failed:\nExpected: %v\nRecieved: %v", Case8Result, Case8Input.taxes)
+		t.Errorf("\nCase 8 failed:\nExpected: %v\nRecieved: %v", Case8Result, Case8Input.GetTaxes())
 	}
 }
 
 func TestCase9(t *testing.T) {
-	isTaxEqual := reflect.DeepEqual(Case9Input.taxes, Case9Result)
+	isTaxEqual := reflect.DeepEqual(Case9Input.GetTaxes(), Case9Result)
 	if !isTaxEqual {
-		t.Errorf("\nCase 9 failed:\nExpected: %v\nRecieved: %v", Case9Result, Case9Input.taxes)
+		t.Errorf("\nCase 9 failed:\nExpected: %v\nRecieved: %v", Case9Result, Case9Input.GetTaxes())
 	}
 }
 

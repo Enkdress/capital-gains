@@ -4,13 +4,16 @@ type Stock struct {
 	weightedAvgPrice float32
 	operations       []Operation
 	totalQuantity    int32
-	taxes            []map[string]float32
 	profit           float32
 	losses           float32
 }
 
-func (s *Stock) CalculateTotalShareAmount(operationQuantity int32) {
-	s.totalQuantity = s.totalQuantity - operationQuantity
+func (s *Stock) UpdateTotalShareCount(quantity int32, operationType string) {
+	if operationType == BuyOperation {
+		s.totalQuantity = s.totalQuantity + quantity
+	} else {
+		s.totalQuantity = s.totalQuantity - quantity
+	}
 }
 
 func (s *Stock) AcummulateProfit(grossProfit float32) {
@@ -51,22 +54,22 @@ func (s *Stock) CalculateWeightedAvgPrice(currentOperation int) {
 	}
 }
 
-func (s *Stock) GetTaxes() {
+func (s *Stock) GetTaxes() []map[string]float32 {
 	taxes := make([]map[string]float32, 0, 0)
 	for i, operation := range s.operations {
-		tax := operation.CalculateTaxes(s, i)
+		s.UpdateTotalShareCount(operation.Quantity, operation.Type)
+		s.CalculateWeightedAvgPrice(i)
+		tax := operation.CalculateTaxes(s)
 		taxes = append(taxes, tax)
 	}
 
-	s.taxes = taxes
+	return taxes
 }
 
 func NewStock(operations []Operation) Stock {
 	stock := Stock{
 		operations: operations,
 	}
-
-	stock.GetTaxes()
 
 	return stock
 }
