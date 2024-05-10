@@ -35,18 +35,13 @@ func (o *Operation) CalculateTaxes(stock *Stock, operationIndex int) map[string]
 	isDeductable := isTotalAmountTaxable && hasLosses
 	o.GetNetProfit(isDeductable, grossProfit, stock.losses)
 
-	if o.NetProfit < 0 {
-		stock.DeductLoss(grossProfit)
-	}
-
 	if isDeductable {
-		o.NetProfit = netProfitCalculation(grossProfit, stock.losses)
-		stock.DeductLoss(grossProfit)
-	} else {
-		o.NetProfit = grossProfit
+		stock.AcummulateLosses(grossProfit)
 	}
 
 	isTaxable := isTotalAmountTaxable && o.NetProfit > 0
+	// fmt.Printf("\nWAP: %v\nTA: %v\nGP: %v\nDE: %v\nLO: %v\nNP: %v\nTXB: %v\n",
+	// 	stock.weightedAvgPrice, o.TotalAmount, grossProfit, isDeductable, stock.losses, o.NetProfit, isTaxable)
 
 	// Losses do not pay taxes
 	if grossProfit < 0 {
@@ -73,7 +68,9 @@ func (o *Operation) GetNetProfit(isDeductable bool, grossProfit, losses float32)
 	if isDeductable {
 		o.NetProfit = netProfitCalculation(grossProfit, losses)
 	} else {
-		o.NetProfit = grossProfit
+		if grossProfit > 0 {
+			o.NetProfit = grossProfit
+		}
 	}
 }
 
@@ -85,8 +82,8 @@ func netProfitCalculation(grossProfit, profit float32) float32 {
 	value := grossProfit + profit
 	netProfit := grossProfit
 
-	if value < 1 {
-		netProfit = 0
+	if value < 1.00 {
+		netProfit = 0.00
 	} else {
 		netProfit = value
 	}
