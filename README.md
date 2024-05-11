@@ -21,11 +21,29 @@ Once that's installed there are two options to run the program:
 Enter the folder and run:
 
 ``` bash
-go get; make go build; make go run < input.txt
+go get; make build; make run
 ```
 
 2. Using Docker
-TODO
+To build the container use the following command:
+
+```bash
+docker build -t capitalgains
+```
+
+> [!NOTE]
+> If the build completes successfully it means that there was no
+> errors in the tests
+
+To run the project just run:
+
+```bash
+docker run capitalgains
+```
+
+> [!NOTE]
+> In case you can to modify the input.txt to add your test cases
+> you will need to re build the image
 
 # Tests
 
