@@ -21,7 +21,7 @@ Once that's installed there are two options to run the program:
 Enter the folder and run:
 
 ``` bash
-go get; make build; make run
+go mod download; make build; make run
 ```
 
 2. Using Docker
@@ -83,6 +83,8 @@ root/
     ├── .gitignore
     ├── go.mod
     ├── go.sum
+    ├── Dockerfile
+    ├── input.txt
     └── README.md
 ```
 
