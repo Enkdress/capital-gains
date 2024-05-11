@@ -45,7 +45,7 @@ func (o *Operation) CalculateTaxes(stock *Stock) map[string]float32 {
 	}
 
 	if isTaxable {
-		taxValue := taxCalculation(o.NetProfit)
+		taxValue := o.calculateTaxOverProfit(o.NetProfit)
 
 		if isDeductable {
 			stock.AcummulateProfit(grossProfit + stock.losses)
@@ -61,7 +61,7 @@ func (o *Operation) CalculateTaxes(stock *Stock) map[string]float32 {
 
 func (o *Operation) GetNetProfit(isDeductable bool, grossProfit, losses float32) {
 	if isDeductable {
-		o.NetProfit = netProfitCalculation(grossProfit, losses)
+		o.NetProfit = o.calculateNetProfit(grossProfit, losses)
 	} else {
 		if grossProfit > 0 {
 			o.NetProfit = grossProfit
@@ -73,7 +73,7 @@ func (o *Operation) calculateGrossProfit(weightedAvgPrice float32) float32 {
 	return (float32(o.Quantity) * o.UnitCost) - (float32(o.Quantity) * weightedAvgPrice)
 }
 
-func netProfitCalculation(grossProfit, profit float32) float32 {
+func (o *Operation) calculateNetProfit(grossProfit, profit float32) float32 {
 	value := grossProfit + profit
 	netProfit := grossProfit
 
@@ -86,7 +86,7 @@ func netProfitCalculation(grossProfit, profit float32) float32 {
 	return netProfit
 }
 
-func taxCalculation(netProfit float32) float32 {
+func (o *Operation) calculateTaxOverProfit(netProfit float32) float32 {
 	return netProfit * TaxRate
 }
 

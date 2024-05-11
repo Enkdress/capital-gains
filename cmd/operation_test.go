@@ -5,6 +5,54 @@ import (
 	"testing"
 )
 
+func TestCalculateGrossProfit(t *testing.T) {
+	var avgPrice float32 = 10.0
+	var unitCost float32 = 20.0
+	var quantity int32 = 100
+	operation := NewOperation(SellOperation, unitCost, quantity)
+
+	grossProfit := operation.calculateGrossProfit(avgPrice)
+	expected := 1000
+
+	if grossProfit != float32(expected) {
+		t.Errorf("\nFailed gross profit calculation:\nExpected: %v\nRecieved: %v\n", expected, grossProfit)
+	}
+}
+
+func TestCalculateNetProfit(t *testing.T) {
+	var avgPrice float32 = 10.0
+	var losses float32 = 0.0
+	var unitCost float32 = 20.0
+	var quantity int32 = 100
+	operation := NewOperation(SellOperation, unitCost, quantity)
+
+	grossProfit := operation.calculateGrossProfit(avgPrice)
+	netProfit := operation.calculateNetProfit(grossProfit, losses)
+	expected := 1000
+
+	if netProfit != float32(expected) {
+		t.Errorf("\nFailed net profit calculation:\nExpected: %v\nRecieved: %v\n", expected, netProfit)
+	}
+
+	avgPrice = 10.0
+	losses = 0.0
+	unitCost = 10.0
+	quantity = 100
+	operation = NewOperation(SellOperation, unitCost, quantity)
+
+	grossProfit = operation.calculateGrossProfit(avgPrice)
+	netProfit = operation.calculateNetProfit(grossProfit, losses)
+	expected = 0
+
+	if netProfit != float32(expected) {
+		t.Errorf("\nFailed net profit calculation:\nExpected: %v\nRecieved: %v\n", expected, netProfit)
+	}
+
+}
+
+func TestCalculateTaxOverProfit(t *testing.T) {
+}
+
 func TestCase1(t *testing.T) {
 	isTaxEqual := reflect.DeepEqual(Case1Input.GetTaxes(), Case1Result)
 	if !isTaxEqual {
