@@ -1,8 +1,8 @@
 build:
 	@go build -o bin/capitalgains ./cmd 
 
-run: build
-	@./bin/capitalgains
+run:
+	./bin/capitalgains < input.txt
 
 test:
 	@go test -v ./...
