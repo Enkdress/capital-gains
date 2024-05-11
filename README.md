@@ -42,7 +42,7 @@ docker run capitalgains
 ```
 
 > [!NOTE]
-> In case you can to modify the input.txt to add your test cases
+> In case you want to modify the input.txt to add your test cases
 > you will need to re build the image
 
 # Tests
